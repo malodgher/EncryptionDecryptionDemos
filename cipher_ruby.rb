@@ -15,8 +15,12 @@ def caesar_alg(text, key)
 	text = text.split(//)
 	text.map! do |ch|
 		# Used a regular expresion instead of traditional conditional statements
+		# Checks to see if character in plaintext is alphabetic or not
 		if(not(/[[:alpha:]]/.match(ch)))
-			ch
+			ch # Continue if it is not
+		# If it is, then apply the Caesar Cipher operation. If after the operation it is not lowercase
+		# then move the character back 26 places in the ASCII table
+		# Do the same for uppercase letters
 		elsif (/[[:lower:]]/.match(ch)) #(("a".ord <= ch.ord) and (ch.ord <= "z".ord))
 			ch = (ch.ord + (key % 26)).chr
 			(not(/[[:lower:]]/.match(ch))) ? (ch.ord - 26).chr : ch #(not (("a".ord <= ch.ord) and (ch.ord <= "z".ord))) ? (ch.ord - 26).chr : ch
@@ -48,14 +52,18 @@ end
 def affine_alg(text, key_1, key_2, e_or_d)
 	text = text.split(//)
 	text.map! do |ch|
+		# If the character is an uppercase letter...
 		(/[[:upper:]]/.match(ch)) ? 
+			# If e_or_d is true, the text will be encrypted using the Affine Cipher encryption operation.
+			# If e_or_d is false, the text will be encrypted using the Affine Cipher decryption operation.
 			(e_or_d == true) ? ((key_1 * (ch.ord + "A".ord) + key_2) % 26 + "A".ord).chr : ((key_1 * ((ch.ord + "A".ord) - key_2)) % 26 + "A".ord).chr
-		: ch
+		: ch # Else continue if not
 	end
 	
 	return text.join("").to_s
 end
 
+# Finds modular inverse of the key given by the user
 def find_inverse(key_1)
 	(1..26).each do |d|
 		return d if(((d * key_1) % 26) == 1) 
